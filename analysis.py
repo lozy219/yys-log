@@ -9,7 +9,10 @@ main = {
 }
 chinese_num = ['一', '二', '三', '四', '五', '六']
 a = []
-with open('raw/06-21.csv', 'r') as c:
+
+date = '06-23'
+
+with open('raw/{0}.csv'.format(date), 'r') as c:
   r = csv.reader(c, delimiter=' ')
   all = {}
   for row in r:
@@ -80,7 +83,7 @@ a.append(main[6])
 a.append(total_6)
 
 
-with open('analysis/06-21.csv', 'w') as c:
+with open('analysis/{0}.csv'.format(date), 'w') as c:
   w = csv.writer(c, delimiter=',')
   for row in a:
     w.writerow(row);
