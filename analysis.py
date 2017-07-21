@@ -102,7 +102,7 @@ def run(file, write_file=False):
       j[yuhun['name']] = y
 
   a.append([])
-  k = ['金色御魂总数', '六星御魂总数', '五星御魂总数']
+  k = ['金色御魂总数', '五星御魂总数', '六星御魂总数']
   v = [total, total_star[0], total_star[1]]
   a.append(k)
   a.append(v)
