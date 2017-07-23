@@ -1,6 +1,6 @@
 # viz
 
-> tutukunkun
+> A Vue.js project
 
 ## Build Setup
 
