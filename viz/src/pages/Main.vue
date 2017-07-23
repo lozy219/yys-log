@@ -1,34 +1,62 @@
 <template>
   <div class="main">
     <div class="side-panel">
-      <img v-for="img in imgPath" class="side-logo" :src="require(`../assets/img/${img}`)">
+      <img v-for="mitama in mitamas" class="side-logo" :src="require(`../assets/img/${mitama}.png`)" @click="mitamaSelect(mitama)">
     </div>
     <div class="stats-panel">
-      <star-distribution :counts="starCounts">
-      </star-distribution>
+      <div class="stats-left">
+        <star-distribution :counts="starCounts">
+        </star-distribution>
+      </div>
+      <div class="stats-right">
+        <position-distribution :counts="positionCounts">
+        </position-distribution>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import StarDistribution from '@/components/StarDistribution';
+import PositionDistribution from '@/components/PositionDistribution';
+
+const metadata = require('@/assets/data.json');
 
 export default {
   name: 'main',
   components: {
     'star-distribution': StarDistribution,
+    'position-distribution': PositionDistribution,
   },
   data() {
     return {
-      imgPath: ['三味.png', '火灵.png', '钟灵.png', '伤魂鸟.png', '狰.png', '铃女.png', '反枕.png', '珍珠.png', '镇墓兽.png', '地藏像.png', '破势.png', '镜姬.png', '天邪.png', '网切.png', '阴魔罗.png', '小袖之手.png', '薙魂.png', '雪幽魂.png', '心眼.png', '蚌精.png', '青鹭火.png', '招财猫.png', '蝠翼.png', '骰子鬼.png', '日女巳时.png', '被服.png', '魅妖.png', '木魅.png', '轮入道.png', '魍魉之匣.png', '树妖.png', '返魂香.png', '鸣屋.png', '涅槃之火.png', '针女.png'],
+      mitamas: ['三味', '火灵', '钟灵', '伤魂鸟', '狰', '铃女', '反枕', '珍珠', '镇墓兽', '地藏像', '破势', '镜姬', '天邪', '网切', '阴魔罗', '小袖之手', '薙魂', '雪幽魂', '心眼', '蚌精', '青鹭火', '招财猫', '蝠翼', '骰子鬼', '日女巳时', '被服', '魅妖', '木魅', '轮入道', '魍魉之匣', '树妖', '返魂香', '鸣屋', '涅槃之火', '针女'],
+      selected: false,
     };
   },
   computed: {
-    counts() {
-      return {
-        five: 18,
-        six: 4,
-      };
+    wrap() {
+      if (this.selected) {
+        return metadata[this.selected];
+      }
+      return metadata;
+    },
+    starCounts() {
+      if (!this.wrap) {
+        return [0, 0];
+      }
+      return [this.wrap['五星'], this.wrap['六星']];
+    },
+    positionCounts() {
+      if (!this.wrap) {
+        return [0, 0, 0, 0, 0, 0];
+      }
+      return [this.wrap['一号位'], this.wrap['二号位'], this.wrap['三号位'], this.wrap['四号位'], this.wrap['五号位'], this.wrap['六号位']];
+    },
+  },
+  methods: {
+    mitamaSelect(name) {
+      this.selected = name;
     },
   },
 };
@@ -62,8 +90,18 @@ export default {
       }
     }
   }
+
   .stats-panel {
     margin-left: $side-panel-width;
+    display: flex;
+  }
+
+  .stats-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: calc(100vw - #{$side-panel-width} - 200px);
   }
 }
 </style>

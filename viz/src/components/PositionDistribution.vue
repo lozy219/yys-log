@@ -1,26 +1,26 @@
 <template>
-  <div class="star-distribution">
-    <pie-chart :chart-data="charData" :width="200" :height="300" :options="options">
-    </pie-chart>
+  <div class="position-distribution">
+    <polar-chart :chart-data="charData" :width="700" :height="600" :options="options">
+    </polar-chart>
   </div>
 </template>
 
 <script>
-import PieChart from '@/components/PieChart';
+import PolarChart from '@/components/PolarChart';
 
 export default {
   props: ['counts'],
   components: {
-    'pie-chart': PieChart,
+    'polar-chart': PolarChart,
   },
   computed: {
     charData() {
       return {
-        labels: ['五星御魂', '六星御魂'],
+        labels: ['一号位', '二号位', '三号位', '四号位', '五号位', '六号位'].reverse(),
         datasets: [
           {
             label: 'GitHub Commits',
-            backgroundColor: ['#FFE2AD', '#E89685'],
+            backgroundColor: ['#037EF3', '#F85A40', '#F48924', '#C15EFF', '#FFC845', '#7EEFBE'].reverse(),
             data: this.counts,
           },
         ],
@@ -30,7 +30,12 @@ export default {
       return {
         responsive: false,
         maintainAspectRatio: false,
+        scale: {
+          display: false,
+        },
+        startAngle: -0.5 * Math.PI,
         legend: {
+          reverse: true,
           position: 'bottom',
           fullWidth: true,
           labels: {
