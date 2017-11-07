@@ -21,7 +21,6 @@ body {
   color: #2c3e50;
   width: 100vw;
   height: 100vh;
-  background-color: rgb(53, 73, 94);
   margin: 0;
 }
 </style>
