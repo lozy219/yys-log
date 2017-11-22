@@ -1,10 +1,6 @@
 <template>
   <div class="main">
     <div class="background">
-      <img
-        id="mitama-background"
-        :src="require(`../assets/img/${deferredSelected}.png`)"
-      >
     </div>
     <div class="side-panel" id="side-panel">
       <img
@@ -98,7 +94,7 @@ export default {
   z-index: -1;
 
   img {
-    transform: translateZ(0);
+    /*transform: translateZ(0);
     will-change: transform;
     width: 100vw;
     margin-top: calc((100vh - 100vw) / 2);
@@ -107,7 +103,7 @@ export default {
 
     &.super-blur {
       filter: blur(200px);
-    }
+    }*/
   }
 }
 
@@ -141,15 +137,33 @@ export default {
   }
 
   .stats-panel {
+    margin: $stats-panel-margin;
     margin-left: $side-panel-width;
+    padding: $stats-panel-margin;
+    position: relative;
     display: flex;
+    border-radius: 40px;
+    height: calc(100vh - 4 * #{$stats-panel-margin});
+
+    &::before {
+      content: '';
+      position: absolute;
+      border-radius: inherit;
+      background-image: linear-gradient(135deg, red, yellow);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      opacity: 0.54;
+    }
   }
 
   .stats-right {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: inherit;
     width: calc(100vw - #{$side-panel-width} - 200px);
   }
 }
