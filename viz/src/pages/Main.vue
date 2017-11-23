@@ -8,10 +8,10 @@
         class="side-logo"
         :class="{ 'side-logo-active': selected === mitama }"
         :src="require(`../assets/img/${mitama}.png`)"
-        @click="mitamaSelect(mitama)"
+        @click="mitamaSelect(mitama, $event)"
       >
     </div>
-    <div class="stats-panel">
+    <div class="stats-panel" :style="panelStyle">
       <div class="stats-left">
         <star-distribution :counts="starCounts">
         </star-distribution>
@@ -26,6 +26,7 @@
 
 <script>
 import Vue from 'vue';
+import Vibrant from 'node-vibrant';
 import StarDistribution from '@/components/StarDistribution';
 import PositionDistribution from '@/components/PositionDistribution';
 
@@ -42,6 +43,11 @@ export default {
       mitamas: ['三味', '火灵', '钟灵', '伤魂鸟', '狰', '铃女', '反枕', '珍珠', '镇墓兽', '地藏像', '破势', '镜姬', '天邪', '网切', '阴魔罗', '小袖之手', '薙魂', '雪幽魂', '心眼', '蚌精', '青鹭火', '招财猫', '蝠翼', '骰子鬼', '日女巳时', '被服', '魅妖', '木魅', '轮入道', '魍魉之匣', '树妖', '返魂香', '鸣屋', '涅槃之火', '针女'],
       selected: false,
       deferredSelected: false,
+      styleFactors: {
+        rotateDeg: 135,
+        dark: [0, 0, 0],
+        light: [50, 50, 50],
+      },
     };
   },
   computed: {
@@ -63,16 +69,27 @@ export default {
       }
       return [this.wrap['一号位'], this.wrap['二号位'], this.wrap['三号位'], this.wrap['四号位'], this.wrap['五号位'], this.wrap['六号位']];
     },
+    panelStyle() {
+      const factors = this.styleFactors;
+      const dark = factors.dark;
+      const light = factors.light;
+      return `background-image: linear-gradient(${factors.rotateDeg}deg, rgba(${dark[0]}, ${dark[1]}, ${dark[2]}, 0.55), rgba(${light[0]}, ${light[1]}, ${light[2]}, 0.55));`;
+    },
   },
   methods: {
-    mitamaSelect(name) {
+    mitamaSelect(name, $event) {
+      const vibrant = new Vibrant($event.target);
+      vibrant.getPalette().then((palette) => {
+        const { DarkVibrant, LightVibrant } = palette;
+        const dark = DarkVibrant.getRgb();
+        const light = LightVibrant.getRgb();
+        this.styleFactors.dark = dark;
+        this.styleFactors.light = light;
+      });
       this.selected = this.selected !== name && name;
       Vue.nextTick(() => {
-        const ele = document.getElementById('mitama-background');
-        ele.classList.add('super-blur');
         setTimeout(() => {
           this.deferredSelected = this.selected;
-          ele.classList.remove('super-blur');
         }, 200);
       });
     },
@@ -92,19 +109,6 @@ export default {
   top: 0;
   left: 0;
   z-index: -1;
-
-  img {
-    /*transform: translateZ(0);
-    will-change: transform;
-    width: 100vw;
-    margin-top: calc((100vh - 100vw) / 2);
-    transition: all ease-in-out .5s;
-    filter: blur(80px);
-
-    &.super-blur {
-      filter: blur(200px);
-    }*/
-  }
 }
 
 .main {
@@ -144,19 +148,7 @@ export default {
     display: flex;
     border-radius: 40px;
     height: calc(100vh - 4 * #{$stats-panel-margin});
-
-    &::before {
-      content: '';
-      position: absolute;
-      border-radius: inherit;
-      background-image: linear-gradient(135deg, red, yellow);
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: -1;
-      opacity: 0.54;
-    }
+    transition: background ease 1s;
   }
 
   .stats-right {
