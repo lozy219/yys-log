@@ -11,7 +11,11 @@
         @click="mitamaSelect(mitama, $event)"
       >
     </div>
-    <div class="stats-panel" :style="panelStyle">
+    <div class="stats-panel">
+      <div class="semi-pseudo-panel" :style="panelStyle[0]">
+      </div>
+      <div class="semi-pseudo-panel" :style="panelStyle[1]">
+      </div>
       <div class="stats-left">
         <star-distribution :counts="starCounts">
         </star-distribution>
@@ -43,11 +47,19 @@ export default {
       mitamas: ['三味', '火灵', '钟灵', '伤魂鸟', '狰', '铃女', '反枕', '珍珠', '镇墓兽', '地藏像', '破势', '镜姬', '天邪', '网切', '阴魔罗', '小袖之手', '薙魂', '雪幽魂', '心眼', '蚌精', '青鹭火', '招财猫', '蝠翼', '骰子鬼', '日女巳时', '被服', '魅妖', '木魅', '轮入道', '魍魉之匣', '树妖', '返魂香', '鸣屋', '涅槃之火', '针女'],
       selected: false,
       deferredSelected: false,
-      styleFactors: {
-        rotateDeg: 135,
-        dark: [0, 0, 0],
-        light: [50, 50, 50],
-      },
+      styleFactors: [
+        {
+          rotateDeg: 135,
+          dark: [0, 0, 0],
+          light: [50, 50, 50],
+        },
+        {
+          rotateDeg: 135,
+          dark: [0, 0, 0],
+          light: [50, 50, 50],
+        },
+      ],
+      flipCount: 0,
     };
   },
   computed: {
@@ -70,23 +82,40 @@ export default {
       return [this.wrap['一号位'], this.wrap['二号位'], this.wrap['三号位'], this.wrap['四号位'], this.wrap['五号位'], this.wrap['六号位']];
     },
     panelStyle() {
-      const factors = this.styleFactors;
-      const dark = factors.dark;
-      const light = factors.light;
-      return `background-image: linear-gradient(${factors.rotateDeg}deg, rgba(${dark[0]}, ${dark[1]}, ${dark[2]}, 0.55), rgba(${light[0]}, ${light[1]}, ${light[2]}, 0.55));`;
+      const factors1 = this.styleFactors[0];
+      const dark1 = factors1.dark;
+      const light1 = factors1.light;
+      const factors2 = this.styleFactors[1];
+      const dark2 = factors2.dark;
+      const light2 = factors2.light;
+      const f = this.flipCount;
+      return [
+        `background-image: linear-gradient(${factors1.rotateDeg}deg, rgba(${dark1[0]}, ${dark1[1]}, ${dark1[2]}, 0.55), rgba(${light1[0]}, ${light1[1]}, ${light1[2]}, 0.55)); opacity: ${1 - f}`,
+        `background-image: linear-gradient(${factors2.rotateDeg}deg, rgba(${dark2[0]}, ${dark2[1]}, ${dark2[2]}, 0.55), rgba(${light2[0]}, ${light2[1]}, ${light2[2]}, 0.55)); opacity: ${f}`,
+      ];
     },
   },
   methods: {
+    setStyleFactor(dark, light) {
+      this.flipCount = 1 - this.flipCount;
+      /* eslint no-bitwise: ["error", { "allow": ["~"] }] */
+      this.styleFactors[this.flipCount].rotateDeg = ~~(Math.random() * 360);
+      this.styleFactors[this.flipCount].dark = dark;
+      this.styleFactors[this.flipCount].light = light;
+    },
     mitamaSelect(name, $event) {
-      const vibrant = new Vibrant($event.target);
-      vibrant.getPalette().then((palette) => {
-        const { DarkVibrant, LightVibrant } = palette;
-        const dark = DarkVibrant.getRgb();
-        const light = LightVibrant.getRgb();
-        this.styleFactors.dark = dark;
-        this.styleFactors.light = light;
-      });
       this.selected = this.selected !== name && name;
+      if (this.selected) {
+        const vibrant = new Vibrant($event.target);
+        vibrant.getPalette().then((palette) => {
+          const { DarkVibrant, LightVibrant } = palette;
+          const dark = DarkVibrant.getRgb();
+          const light = LightVibrant.getRgb();
+          this.setStyleFactor(dark, light);
+        });
+      } else {
+        this.setStyleFactor([0, 0, 0], [50, 50, 50]);
+      }
       Vue.nextTick(() => {
         setTimeout(() => {
           this.deferredSelected = this.selected;
@@ -148,7 +177,18 @@ export default {
     display: flex;
     border-radius: 40px;
     height: calc(100vh - 4 * #{$stats-panel-margin});
-    transition: background ease 1s;
+    box-shadow: 6px 5px 13px 1px rgba(0, 0, 0, 0.45);
+
+    .semi-pseudo-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transition: all ease-in-out 0.6s;
+      border-radius: inherit;
+      z-index: -1;
+    }
   }
 
   .stats-right {
