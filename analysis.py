@@ -23,7 +23,7 @@ def run(file, write_file=False):
     all = {}
     for row in r:
       source = row[-1]
-      if re.findall('御魂副本', source, re.S):
+      if re.findall('御魂副本|石距获得|业原火', source, re.S):
         name = row[3]
         if name not in all:
           all[name] = {
