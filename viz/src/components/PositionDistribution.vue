@@ -1,6 +1,6 @@
 <template>
   <div class="position-distribution">
-    <polar-chart :chart-data="charData" :width="700" :height="600" :options="options">
+    <polar-chart :chart-data="charData" :width="300" :height="400" :options="options">
     </polar-chart>
   </div>
 </template>

@@ -16,13 +16,17 @@
       </div>
       <div class="semi-pseudo-panel" :style="panelStyle[1]">
       </div>
-      <div class="stats-left">
+      <div class="stats-column">
         <star-distribution :counts="starCounts">
         </star-distribution>
       </div>
-      <div class="stats-right">
+      <div class="stats-column">
         <position-distribution :counts="positionCounts">
         </position-distribution>
+      </div>
+      <div class="stats-column">
+        <type-distribution :counts="typeCounts">
+        </type-distribution>
       </div>
     </div>
   </div>
@@ -33,6 +37,7 @@ import Vue from 'vue';
 import Vibrant from 'node-vibrant';
 import StarDistribution from '@/components/StarDistribution';
 import PositionDistribution from '@/components/PositionDistribution';
+import TypeDistribution from '@/components/TypeDistribution';
 
 const metadata = require('@/assets/data.json');
 
@@ -41,6 +46,7 @@ export default {
   components: {
     'star-distribution': StarDistribution,
     'position-distribution': PositionDistribution,
+    'type-distribution': TypeDistribution,
   },
   data() {
     return {
@@ -77,9 +83,15 @@ export default {
     },
     positionCounts() {
       if (!this.wrap) {
-        return [0, 0, 0, 0, 0, 0];
+        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       }
       return [this.wrap['一号位'], this.wrap['二号位'], this.wrap['三号位'], this.wrap['四号位'], this.wrap['五号位'], this.wrap['六号位']];
+    },
+    typeCounts() {
+      if (!this.wrap) {
+        return [10, 0, 0, 0, 0, 0];
+      }
+      return [this.wrap['攻击'], this.wrap['防御'], this.wrap['生命'], this.wrap['暴击'], this.wrap['速度'], this.wrap['攻击加成'], this.wrap['防御加成'], this.wrap['生命加成'], this.wrap['暴击伤害'], this.wrap['效果命中'], this.wrap['效果抵抗']];
     },
     panelStyle() {
       const factors1 = this.styleFactors[0];
@@ -191,12 +203,12 @@ export default {
     }
   }
 
-  .stats-right {
+  .stats-column {
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     height: inherit;
-    width: calc(100vw - #{$side-panel-width} - 200px);
   }
 }
 </style>
