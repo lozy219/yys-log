@@ -24,10 +24,10 @@
         <position-distribution :counts="positionCounts">
         </position-distribution>
       </div>
-      <div class="stats-column">
+      <!-- <div class="stats-column">
         <type-distribution :counts="typeCounts">
         </type-distribution>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
